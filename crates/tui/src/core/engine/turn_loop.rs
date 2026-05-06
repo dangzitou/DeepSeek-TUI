@@ -1664,6 +1664,15 @@ impl Engine {
                 continue;
             }
 
+            // #874: Drain any steers that arrived during tool execution (from
+            // Ctrl+Enter or queued messages promoted by the UI layer).
+            while let Ok(steer) = self.rx_steer.try_recv() {
+                let steer = steer.trim().to_string();
+                if !steer.is_empty() {
+                    pending_steers.push(steer);
+                }
+            }
+
             if !pending_steers.is_empty() {
                 for steer in pending_steers.drain(..) {
                     self.session

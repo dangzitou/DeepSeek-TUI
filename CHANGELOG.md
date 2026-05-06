@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **Mid-turn queued message intervention** (#874) — Queued user messages are now
+  automatically promoted to steers after each tool execution completes, allowing
+  users to intervene during multi-step plan execution without waiting for all
+  steps to finish.
+
 ## [0.8.13] - 2026-05-05
 
 A stabilization release for DeepSeek V4 runtime and TUI reliability. The

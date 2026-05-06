@@ -814,6 +814,19 @@ async fn run_event_loop(
                         });
                         handle_tool_call_complete(app, &id, &name, &result);
 
+                        // #874: After each tool completes, promote queued messages to steers.
+                        if let Some(queued) = app.pop_queued_message() {
+                            let content = queued_message_content_for_app(
+                                app,
+                                &queued,
+                                std::env::current_dir().ok(),
+                            );
+                            if let Err(err) = engine_handle.steer(content).await {
+                                app.queue_message(queued);
+                                app.status_message = Some(format!("Steer failed: {err}"));
+                            }
+                        }
+
                         // Immediately refresh the task panel sidebar when a
                         // tool that changes task state completes, so the
                         // Tasks panel stays in sync with tool execution
